@@ -30,10 +30,6 @@ class Person:
 		self.engaged_to = None
 		self.proposed_to = []
 
-	def __str__(self):
-		if self.engaged_to:
-			return self.name + ' is engaged to ' + self.engaged_to
-
 	def find_match_not_proposed(self):
 		for woman in self.preferences:
 			if not (woman in self.proposed_to):
@@ -102,11 +98,20 @@ def stable_matching (men, women):
 		else:
 			free_man_name = None
 
-	for name in men_dict:
-		print men_dict[name]
+	pairs = []
+	for man in men_dict:
+		pairs.append([man, men_dict[man].engaged_to])
+
+	return pairs
+
+def print_pair(pair):
+	print pair[0] + ' is engaged to ' + pair[1]
 
 if __name__ == '__main__':
-	stable_matching(men, women)
+	pairs = stable_matching(men, women)
+
+	for pair in pairs:
+		print_pair(pair)
 
 
 
