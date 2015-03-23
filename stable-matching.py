@@ -112,8 +112,3 @@ if __name__ == '__main__':
 
 	for pair in pairs:
 		print_pair(pair)
-
-
-
-
-
