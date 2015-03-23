@@ -2,6 +2,7 @@ from collections import deque
 
 list = [5, 2, 69, 21, 123, 1, 4]
 
+
 def merge(list_a, list_b):
 	if len(list_a) is 0:
 		return list_b	
