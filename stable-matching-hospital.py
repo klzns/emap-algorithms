@@ -64,7 +64,7 @@ class Student:
 
 
 def stable_matching (hospitals, students):
-	# Initialize all hospitals and studens free
+	# Initialize all hospitals and students
 	available_hospitals = []
 
 	hospitals_dict = {}
@@ -93,7 +93,7 @@ def stable_matching (hospitals, students):
 		# If s is free
 		if student.assigned_to is None:
 
-			# (h, s) become engaged
+			# (h, s) become assigned
 			student.assigned_to = available_hospital
 			hospital.assign(student_name)
 
@@ -101,7 +101,7 @@ def stable_matching (hospitals, students):
 
 			# If s prefers h to h'
 			if student.would_rather(available_hospital, student.assigned_to):
-				# (h, s) become engaged
+				# (h, s) become assigned
 				former_hospital_name = student.assigned_to
 				student.assigned_to = available_hospital
 				hospital.assign(student_name)
@@ -123,7 +123,7 @@ def stable_matching (hospitals, students):
 			available_hospital = None
 
 	pairs = []
-	# Make pairs array
+	# Make array of pairs
 	for hospital in hospitals_dict:
 		pairs.append([hospital, hospitals_dict[hospital].students_assigned])
 
