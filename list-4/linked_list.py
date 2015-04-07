@@ -3,9 +3,6 @@ class Node:
         self.car = cargo
         self.cdr = next
 
-    def __str__(self):
-        return str(self.car)
-
     def distance(self, end_value):
         node = self
         has_next = None
