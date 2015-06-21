@@ -3,6 +3,8 @@ from graph import Graph
 from dijkstra import dijkstra, shortest
 from utils import read_csv
 from console import print_graph, print_path, print_instructions
+import networkx as nx
+import matplotlib.pylab as plt
 
 
 def create_graph(vertices, edges):
@@ -48,6 +50,51 @@ def compute_all_paths(g, vertices, v0):
     return [paths_to_v0, v0_to_vertices]
 
 
+def find_edge(edges, frm, to):
+    for edge in edges:
+        if edge['from'] == frm and edge['to'] == to:
+            return edge
+    return None
+
+
+def show_path(path, vertices, edges):
+    graph = nx.DiGraph()
+
+    for vertex in vertices:
+        graph.add_node(vertex)
+
+    edges = edges[:]
+    path = path[::-1]
+    for i, node in enumerate(path):
+        if i > 0:
+            edge = find_edge(edges, path[i-1], node)
+            if edge is None:
+                continue
+            if edge['from'] == path[i-1] and edge['to'] == node:
+                edge['path'] = True
+                continue
+
+    for edge in edges:
+        if 'path' not in edge:
+            edge['path'] = False
+        graph.add_edge(edge['from'], edge['to'], weight=edge['cost'], cost=edge['path'])
+
+    edefault = [(u, v) for (u, v, d) in graph.edges(data=True) if not d['cost']]
+    epath = [(u, v) for (u, v, d) in graph.edges(data=True) if d['cost']]
+    edge_labels = dict([((u, v, ), d['weight']) for (u, v, d) in graph.edges(data=True)])
+
+    pos = nx.circular_layout(graph)
+    nx.draw_networkx_nodes(graph, pos)
+    nx.draw_networkx_edges(graph, pos, edgelist=edefault, width=1, arrows=True)
+    nx.draw_networkx_edges(graph, pos, edgelist=epath, width=1, alpha=0.5, edge_color='b',arrows=True)
+    nx.draw_networkx_edge_labels(graph, pos, edge_labels=edge_labels)
+    nx.draw_networkx_labels(graph, pos)
+    plt.axis('off')
+    plt.show()
+
+    return True
+
+
 def main(v0, frm, to):
     [vertices, edges] = read_csv('graph.csv')
 
@@ -58,6 +105,8 @@ def main(v0, frm, to):
 
     path = get_path_passing_through_v0(paths_to_v0, v0_to_vertices, frm, to)
     print_path(path)
+
+    show_path(path, vertices, edges)
 
 
 if __name__ == '__main__':
