@@ -3,22 +3,28 @@ import csv
 
 def read_csv(filename):
     people = []
-    matrix = []
+    edges = []
     with open(filename, 'rb') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
         for i, row in enumerate(spamreader):
-            people.append(row[0])
-            matrix.append(row[1:])
+            if i == 0:
+                people = row
+                continue
+            edges.append(row)
 
-    return [people, matrix]
+    return [people, edges]
 
 
-def verify_matrix(matrix):
-    matrix_len = len(matrix)
-    for i, row in enumerate(matrix):
-        for j, col in enumerate(row):
-            if matrix[i][j] is not matrix[j][i]:
-                print 'Something is wrong at '+str(i)+', '+str(j)
+def verify_edges(edges):
+    for i, edge in enumerate(edges):
+        count = []
+        for j, col in enumerate(edge):
+            if col == "1":
+                count.append(j)
+            if len(count) > 2:
+                print 'Something is wrong at edge '+str(i)
+                print count
+                print ''
                 return False
     return True
 
@@ -38,3 +44,14 @@ def find_person_index(people, person_name):
         if person == str(person_name):
             return index
     return None
+
+
+def get_edges_of_person(people, edges, person_name):
+    person_index = find_person_index(people, person_name)
+
+    person_edges = []
+    for i, edge in enumerate(edges):
+        if edge[person_index] == "1":
+            person_edges.append(i)
+
+    return person_edges
