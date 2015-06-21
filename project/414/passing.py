@@ -4,6 +4,7 @@ from dijkstra import dijkstra, shortest
 from utils import read_csv
 from console import print_graph, print_path, print_instructions
 
+
 def create_graph(vertices, edges):
     g = Graph()
 

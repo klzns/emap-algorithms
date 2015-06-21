@@ -1,6 +1,7 @@
 import heapq
 from console import print_dijkstra, print_update, print_not_updated
 
+
 def shortest(v, path):
     if v.previous:
         path.append(v.previous.get_id())
@@ -14,7 +15,7 @@ def dijkstra(aGraph, start):
     start.set_distance(0)
 
     # Put tuple pair into the priority queue
-    unvisited_queue = [(v.get_distance(),v) for v in aGraph]
+    unvisited_queue = [(v.get_distance(), v) for v in aGraph]
     heapq.heapify(unvisited_queue)
 
     while len(unvisited_queue):
@@ -33,14 +34,16 @@ def dijkstra(aGraph, start):
             if new_dist < next.get_distance():
                 next.set_distance(new_dist)
                 next.set_previous(current)
-                print_update(current.get_id(), next.get_id(), next.get_distance())
+                print_update(current.get_id(), next.get_id(),
+                             next.get_distance())
             else:
-                print_not_updated(current.get_id(), next.get_id(), next.get_distance())
+                print_not_updated(current.get_id(), next.get_id(),
+                                  next.get_distance())
 
         # Rebuild heap
         # 1. Pop every item
         while len(unvisited_queue):
             heapq.heappop(unvisited_queue)
         # 2. Put all vertices not visited into the queue
-        unvisited_queue = [(v.get_distance(),v) for v in aGraph if not v.visited]
+        unvisited_queue = [(v.get_distance(), v) for v in aGraph if not v.visited]
         heapq.heapify(unvisited_queue)

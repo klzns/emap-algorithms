@@ -39,6 +39,7 @@ class Vertex:
     def __str__(self):
         return str(self.id) + ' connected: ' + str([x.id for x in self.connected])
 
+
 class Graph:
     def __init__(self):
         self.vert_dict = {}
@@ -59,7 +60,7 @@ class Graph:
         else:
             return None
 
-    def add_edge(self, frm, to, cost = 0):
+    def add_edge(self, frm, to, cost=0):
         if frm not in self.vert_dict:
             self.add_vertex(frm)
         if to not in self.vert_dict:
