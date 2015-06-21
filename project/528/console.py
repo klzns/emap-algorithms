@@ -22,7 +22,8 @@ def print_status(people, matrix, people_to_remove, iteration):
 
 def print_result(people):
     print bcolors.HEADER + '\nFinish!\n'
-    print bcolors.OKGREEN + bcolors.BOLD + 'Number of people invited: ' + bcolors.UNDERLINE + str(len(people))
+    print(bcolors.OKGREEN + bcolors.BOLD + 'Number of people invited: ' +
+          bcolors.UNDERLINE + str(len(people)))
     if len(people) > 0:
         print bcolors.ENDC + ', '.join(people) + '\n'
     else:
@@ -32,6 +33,7 @@ def print_result(people):
 def print_instructions():
     print '\n----------'
     print bcolors.OKBLUE + 'This script accepts parameters, e.g.:'
-    print bcolors.HEADER + '$ python party.py '+ bcolors.BOLD +'<minimum_number_of_friends> <must_unknow_at_least>\n' + bcolors.ENDC
+    print(bcolors.HEADER + '$ python party.py ' + bcolors.BOLD +
+          '<minimum_number_of_friends> <must_unknow_at_least>\n' + bcolors.ENDC)
     print bcolors.OKBLUE + 'Using default values of 5 and 5' + bcolors.ENDC
     print '----------\n'

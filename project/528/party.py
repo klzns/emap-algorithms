@@ -1,6 +1,7 @@
 import sys
 from console import print_status, print_result, print_instructions
-from utils import read_csv, verify_edges, add_person_once, find_person_index, get_edges_of_person
+from utils import read_csv, verify_edges, add_person_once, find_person_index,
+get_edges_of_person
 
 
 def filter_people(people, edges, minimum_number_of_friends, must_unknow_at_least):
@@ -62,9 +63,13 @@ def main(mininum, max):
     iteration = 1
     while True:
         people_to_remove = []
-        [has_too_few_friends, has_too_much_friends] = filter_people(people, edges, mininum, max)
+        [has_too_few_friends, has_too_much_friends] = filter_people(people,
+                                                                    edges,
+                                                                    mininum,
+                                                                    max)
         people_to_remove.extend(has_too_few_friends)
-        people_to_remove = add_person_once(people_to_remove, has_too_much_friends)
+        people_to_remove = add_person_once(people_to_remove,
+                                           has_too_much_friends)
 
         if len(people_to_remove) is 0:
             break
