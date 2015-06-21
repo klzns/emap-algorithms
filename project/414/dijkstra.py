@@ -1,8 +1,7 @@
 import heapq
-
+from console import print_dijkstra, print_update, print_not_updated
 
 def shortest(v, path):
-    ''' make shortest path from v.previous'''
     if v.previous:
         path.append(v.previous.get_id())
         shortest(v.previous, path)
@@ -10,7 +9,7 @@ def shortest(v, path):
 
 
 def dijkstra(aGraph, start):
-    print '''Dijkstra's shortest path'''
+    print_dijkstra()
     # Set the distance for the start node to zero
     start.set_distance(0)
 
@@ -24,8 +23,8 @@ def dijkstra(aGraph, start):
         current = uv[1]
         current.set_visited()
 
-        #for next in v.adjacent:
-        for next in current.adjacent:
+        # for next in v.connected:
+        for next in current.connected:
             # if visited, skip
             if next.visited:
                 continue
@@ -34,11 +33,9 @@ def dijkstra(aGraph, start):
             if new_dist < next.get_distance():
                 next.set_distance(new_dist)
                 next.set_previous(current)
-                print 'updated : current = %s next = %s new_dist = %s' \
-                        %(current.get_id(), next.get_id(), next.get_distance())
+                print_update(current.get_id(), next.get_id(), next.get_distance())
             else:
-                print 'not updated : current = %s next = %s new_dist = %s' \
-                        %(current.get_id(), next.get_id(), next.get_distance())
+                print_not_updated(current.get_id(), next.get_id(), next.get_distance())
 
         # Rebuild heap
         # 1. Pop every item

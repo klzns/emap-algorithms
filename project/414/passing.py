@@ -1,12 +1,10 @@
+import sys
 from graph import Graph
 from dijkstra import dijkstra, shortest
 from utils import read_csv
+from console import print_graph, print_path, print_instructions
 
-
-
-if __name__ == '__main__':
-    [vertices, edges] = read_csv('graph.csv')
-
+def create_graph(vertices, edges):
     g = Graph()
 
     for vertex in vertices:
@@ -15,17 +13,62 @@ if __name__ == '__main__':
     for edge in edges:
         g.add_edge(edge['from'], edge['to'], edge['cost'])
 
-    print 'Graph data:'
-    for v in g:
-        for w in v.get_connections():
-            vid = v.get_id()
-            wid = w.get_id()
-            print '( %s , %s, %3d)'  % ( vid, wid, v.get_weight(w))
+    return g
 
 
-    dijkstra(g, g.get_vertex('a'))
+def shortest_path(g, a, b):
+    dijkstra(g, g.get_vertex(a))
 
-    target = g.get_vertex('d')
+    target = g.get_vertex(b)
     path = [target.get_id()]
     shortest(target, path)
-    print 'The shortest path : %s' %(path[::-1])
+
+    g.reset()
+
+    return path
+
+
+def get_path_passing_through_v0(paths_to_v0, v0_to_vertices, frm, to):
+    path = []
+    path.extend(v0_to_vertices[to])
+    path.extend(paths_to_v0[frm][1:])
+
+    return path
+
+
+def compute_all_paths(g, vertices, v0):
+    paths_to_v0 = {}
+    v0_to_vertices = {}
+
+    for vertex in vertices:
+        paths_to_v0[vertex] = shortest_path(g, vertex, v0)
+        v0_to_vertices[vertex] = shortest_path(g, v0, vertex)
+
+    return [paths_to_v0, v0_to_vertices]
+
+
+def main(v0, frm, to):
+    [vertices, edges] = read_csv('graph.csv')
+
+    g = create_graph(vertices, edges)
+    print_graph(g)
+
+    [paths_to_v0, v0_to_vertices] = compute_all_paths(g, vertices, v0)
+
+    path = get_path_passing_through_v0(paths_to_v0, v0_to_vertices, frm, to)
+    print_path(path)
+
+
+if __name__ == '__main__':
+    v0 = 'a'
+    frm = 'd'
+    to = 'c'
+
+    if len(sys.argv) is 4:
+        vo = int(sys.argv[1])
+        frm = int(sys.argv[2])
+        to = int(sys.argv[3])
+    else:
+        print_instructions()
+
+    main(v0, frm, to)

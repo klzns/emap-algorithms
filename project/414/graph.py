@@ -4,7 +4,7 @@ import sys
 class Vertex:
     def __init__(self, node):
         self.id = node
-        self.adjacent = {}
+        self.connected = {}
         # Set distance to infinity for all nodes
         self.distance = sys.maxint
         # Mark all nodes unvisited
@@ -12,17 +12,17 @@ class Vertex:
         # Predecessor
         self.previous = None
 
-    def add_neighbor(self, neighbor, weight=0):
-        self.adjacent[neighbor] = weight
+    def add_connection(self, vertex, weight=0):
+        self.connected[vertex] = weight
 
     def get_connections(self):
-        return self.adjacent.keys()
+        return self.connected.keys()
 
     def get_id(self):
         return self.id
 
-    def get_weight(self, neighbor):
-        return self.adjacent[neighbor]
+    def get_weight(self, vertex):
+        return self.connected[vertex]
 
     def set_distance(self, dist):
         self.distance = dist
@@ -37,7 +37,7 @@ class Vertex:
         self.visited = True
 
     def __str__(self):
-        return str(self.id) + ' adjacent: ' + str([x.id for x in self.adjacent])
+        return str(self.id) + ' connected: ' + str([x.id for x in self.connected])
 
 class Graph:
     def __init__(self):
@@ -65,8 +65,7 @@ class Graph:
         if to not in self.vert_dict:
             self.add_vertex(to)
 
-        self.vert_dict[frm].add_neighbor(self.vert_dict[to], cost)
-        self.vert_dict[to].add_neighbor(self.vert_dict[frm], cost)
+        self.vert_dict[frm].add_connection(self.vert_dict[to], cost)
 
     def get_vertices(self):
         return self.vert_dict.keys()
@@ -76,3 +75,9 @@ class Graph:
 
     def get_previous(self, current):
         return self.previous
+
+    def reset(self):
+        for vertex in self.vert_dict:
+            self.vert_dict[vertex].set_distance(sys.maxint)
+            self.vert_dict[vertex].previous = None
+            self.vert_dict[vertex].visited = False
