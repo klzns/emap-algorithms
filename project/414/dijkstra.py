@@ -3,6 +3,7 @@ from console import print_dijkstra, print_update, print_not_updated
 
 
 def shortest(v, path):
+    # Pegamos o caminho fazendo o caminho inverso, do destino a origem
     if v.previous:
         path.append(v.previous.get_id())
         shortest(v.previous, path)
@@ -11,24 +12,25 @@ def shortest(v, path):
 
 def dijkstra(aGraph, start):
     print_dijkstra()
-    # Set the distance for the start node to zero
+    # Define a distancia do no de inicio como zero
     start.set_distance(0)
 
-    # Put tuple pair into the priority queue
+    # Coloca o par de tupla na heap
     unvisited_queue = [(v.get_distance(), v) for v in aGraph]
     heapq.heapify(unvisited_queue)
 
     while len(unvisited_queue):
-        # Pops a vertex with the smallest distance
+        # Retira o vertice com a menor distancia
         uv = heapq.heappop(unvisited_queue)
         current = uv[1]
         current.set_visited()
 
-        # for next in v.connected:
+        # Para o proximo no connectado
         for next in current.connected:
-            # if visited, skip
+            # Se estiver visitado, pula
             if next.visited:
                 continue
+
             new_dist = current.get_distance() + current.get_weight(next)
 
             if new_dist < next.get_distance():
@@ -40,10 +42,11 @@ def dijkstra(aGraph, start):
                 print_not_updated(current.get_id(), next.get_id(),
                                   next.get_distance())
 
-        # Rebuild heap
-        # 1. Pop every item
+        # Reconstruimos a heap
+        # Tiramos todos os items
         while len(unvisited_queue):
             heapq.heappop(unvisited_queue)
-        # 2. Put all vertices not visited into the queue
+
+        # Colocamos todos os vertices nao visitados na heap
         unvisited_queue = [(v.get_distance(), v) for v in aGraph if not v.visited]
         heapq.heapify(unvisited_queue)
