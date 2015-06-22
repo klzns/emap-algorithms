@@ -4,6 +4,8 @@ import csv
 def read_csv(filename):
     people = []
     edges = []
+
+    # Le matriz de incidencia
     with open(filename, 'rb') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
         for i, row in enumerate(spamreader):
@@ -15,6 +17,8 @@ def read_csv(filename):
     return [people, edges]
 
 
+# Verifica se ha um erro na matriz de incidencia
+# isto eh, se alguma aresta liga-se a mais de um no
 def verify_edges(edges):
     for i, edge in enumerate(edges):
         count = []
@@ -27,16 +31,6 @@ def verify_edges(edges):
                 print ''
                 return False
     return True
-
-
-def add_person_once(destination, source):
-    for item in source:
-        try:
-            destination.index(item)
-        except ValueError:
-            destination.append(item)
-
-    return destination
 
 
 def find_person_index(people, person_name):
