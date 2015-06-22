@@ -14,7 +14,6 @@ def main():
     all_cities.extend(x_cities)
     all_cities.extend(v_cities)
 
-    print x_cities, v_cities
     # Adicionamos todas as cidades e arestas
     for vertex in all_cities:
         graph.add_node(vertex)
