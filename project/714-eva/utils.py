@@ -1,32 +1,45 @@
 import csv
 
 
+def get_city_info(city):
+    if 'X:' in city:
+        return 'X', city.split('X:')[1]
+    if 'S:' in city:
+        return 'S', city.split('S:')[1]
+    if 'V:' in city:
+        return 'V', city.split('V:')[1]
+
+
 def read_csv(filename):
     roads = []
     s_cities = []
     x_cities = []
     v_cities = []
+
+    # Lemos o arquivo que possui o seguinte formato:
+    # "<grupo>:<cidade>","<grupo>:<cidade>"
+    # onde a primeira cidade se conecta a segunda
+    # Existem 3 grupos:
+    # - X, cidade populada
+    # - S, cidade segura
+    # - V, cidade comum
     with open(filename, 'rb') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
         for i, row in enumerate(spamreader):
             roads.append(row)
 
+    # Devemos formatar as arestas e limpar o nome das cidades
     clean_roads = []
     for road in roads:
         cities = []
         for city in road:
-            result = city.split('X:')
-            if len(result) > 1:
-                city_name = result[1]
+            group, city_name = get_city_info(city)
+            if group == 'X':
                 x_cities.append(city_name)
-            else:
-                result = city.split('S:')
-                if len(result) > 1:
-                    city_name = result[1]
-                    s_cities.append(city_name)
-                else:
-                    city_name = city.split('V:')[1]
-                    v_cities.append(city_name)
+            if group == 'S':
+                s_cities.append(city_name)
+            if group == 'V':
+                v_cities.append(city_name)
             cities.append(city_name)
         edge = {
             'from': cities[0],
@@ -34,6 +47,7 @@ def read_csv(filename):
         }
         clean_roads.append(edge)
 
+    # Remove as cidades repetidas
     x_cities = set(x_cities)
     s_cities = set(s_cities)
     v_cities = set(v_cities)
