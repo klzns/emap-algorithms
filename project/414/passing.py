@@ -33,28 +33,26 @@ def shortest_path(g, a, b):
     return path
 
 
-def get_path_passing_through_v0(paths_to_v0, v0_to_vertices, frm, to):
+def compute_all_paths(g, vertices):
+    shortest_paths = {}
+
+    for a in vertices:
+        shortest_paths[a] = {}
+        for b in vertices:
+            shortest_paths[a][b] = shortest_path(g, a, b)
+
+    return shortest_paths
+
+
+def get_path_passing_through_v0(shortest_paths, frm, to, v0):
     path = []
 
     # O caminho total eh a juncao do caminho do vertice origem ate v0
     # junto com o caminho de v0 ate o vertice destino
-    path.extend(v0_to_vertices[to])
-    path.extend(paths_to_v0[frm][1:])
+    path.extend(shortest_paths[v0][to])
+    path.extend(shortest_paths[frm][v0])
 
     return path
-
-
-def compute_all_paths(g, vertices, v0):
-    paths_to_v0 = {}
-    v0_to_vertices = {}
-
-    for vertex in vertices:
-        # Computamos os caminhos do vertice ate v0
-        paths_to_v0[vertex] = shortest_path(g, vertex, v0)
-        # Computamos os caminhos de v0 ate o vertice
-        v0_to_vertices[vertex] = shortest_path(g, v0, vertex)
-
-    return [paths_to_v0, v0_to_vertices]
 
 
 def main(v0, frm, to):
@@ -63,11 +61,11 @@ def main(v0, frm, to):
     g = create_graph(vertices, edges)
     print_graph(g)
 
-    # Computamos todos os caminhos de e para v0
-    [paths_to_v0, v0_to_vertices] = compute_all_paths(g, vertices, v0)
+    # Computamos todos os caminhos os melhores caminhos
+    shortest_paths = compute_all_paths(g, vertices)
 
     # Pegamos o caminho de "frm" ate "to" passando por v0
-    path = get_path_passing_through_v0(paths_to_v0, v0_to_vertices, frm, to)
+    path = get_path_passing_through_v0(shortest_paths, frm, to, v0)
     print_path(path)
 
     # Exibimos uma visualizacao grafica
