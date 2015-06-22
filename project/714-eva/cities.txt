@@ -1,0 +1,8 @@
+"X:Detroit","X:Washington"
+"X:Detroit","X:Houston"
+"X:Washington","V:Buffalo"
+"X:Washington","V:Newark"
+"X:Houston","V:Las Vegas"
+"V:Buffalo","S:Toronto"
+"V:Newark","S:New York"
+"V:Las Vegas","S:San Francisco"
