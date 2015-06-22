@@ -2,7 +2,7 @@ import sys
 from graph import Graph
 from dijkstra import dijkstra, shortest
 from utils import read_csv, show_path
-from console import print_graph, print_path, print_instructions
+from console import print_graph, print_path, print_instructions, print_shortest_path, print_all_paths
 
 
 def create_graph(vertices, edges):
@@ -33,7 +33,7 @@ def shortest_path(g, a, b):
     return path
 
 
-def compute_all_paths(g, vertices):
+def compute_all_shortest_paths(g, vertices):
     shortest_paths = {}
 
     for a in vertices:
@@ -44,15 +44,23 @@ def compute_all_paths(g, vertices):
     return shortest_paths
 
 
-def get_path_passing_through_v0(shortest_paths, frm, to, v0):
+def get_path_passing_through_v0(shortest_paths, v0, frm, to):
     path = []
 
     # O caminho total eh a juncao do caminho do vertice origem ate v0
     # junto com o caminho de v0 ate o vertice destino
     path.extend(shortest_paths[v0][to])
-    path.extend(shortest_paths[frm][v0])
+    path.extend(shortest_paths[frm][v0][1:])
 
     return path
+
+
+def all_paths(shortest_paths, v0):
+    print_all_paths()
+    for frm in shortest_paths:
+        for to in shortest_paths[frm]:
+            path = get_path_passing_through_v0(shortest_paths, v0, frm, to)
+            print_path(path)
 
 
 def main(v0, frm, to):
@@ -61,11 +69,15 @@ def main(v0, frm, to):
     g = create_graph(vertices, edges)
     print_graph(g)
 
-    # Computamos todos os caminhos os melhores caminhos
-    shortest_paths = compute_all_paths(g, vertices)
+    # Computamos todos os melhores caminhos
+    shortest_paths = compute_all_shortest_paths(g, vertices)
+
+    # Imprimimos todos os menores caminhos passando por v0
+    all_paths(shortest_paths, v0)
 
     # Pegamos o caminho de "frm" ate "to" passando por v0
-    path = get_path_passing_through_v0(shortest_paths, frm, to, v0)
+    path = get_path_passing_through_v0(shortest_paths, v0, frm, to)
+    print_shortest_path(v0, frm, to)
     print_path(path)
 
     # Exibimos uma visualizacao grafica

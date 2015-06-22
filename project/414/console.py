@@ -39,10 +39,16 @@ def print_not_updated(current, next, distance):
           ', new dist = ' + bcolors.WARNING + str(distance) + bcolors.ENDC)
 
 
+def print_shortest_path(v0, frm, to):
+    print bcolors.BOLD + '\nThe shortest path from ' + frm + ' to ' + to + ' passing through ' + v0 + bcolors.ENDC
+
+
+def print_all_paths():
+    print bcolors.BOLD + '\nAll shortest paths:' + bcolors.ENDC
+
+
 def print_path(path):
-    print bcolors.BOLD + '\nThe shortest path: ' + bcolors.OKBLUE
-    print path[::-1]
-    print bcolors.ENDC
+    print bcolors.OKBLUE, path[::-1], bcolors.ENDC
 
 
 def print_instructions():
