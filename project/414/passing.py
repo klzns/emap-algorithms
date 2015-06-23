@@ -20,20 +20,31 @@ def create_graph(vertices, edges):
 def compute_all_shortest_paths(g, vertices):
     shortest_paths = {}
 
+    # Para cada vertice no grafo
     for a in vertices:
         shortest_paths[a] = {}
+
+        # Rodamos o Dijkstra
         dijkstra(g, g.get_vertex(a))
+
+        # Para todos os outros vertices
         for b in vertices:
             destination = g.get_vertex(b)
             path = [destination.get_id()]
+
+            # Pegamos o melhor caminho de a ate b
             shortest(destination, path)
+
+            # Guardamos esse caminho em um dicionario
             shortest_paths[a][b] = path
+
+        # Limpamos as variaveis dessa rodada do Dijkstra
         g.reset()
 
     return shortest_paths
 
 
-def get_path_passing_through_v0(shortest_paths, v0, frm, to):
+def get_path_with_v0(shortest_paths, v0, frm, to):
     path = []
 
     # O caminho total eh a juncao do caminho do vertice origem ate v0
@@ -52,7 +63,7 @@ def all_paths(shortest_paths, v0):
     print_all_paths()
     for frm in shortest_paths:
         for to in shortest_paths[frm]:
-            path = get_path_passing_through_v0(shortest_paths, v0, frm, to)
+            path = get_path_with_v0(shortest_paths, v0, frm, to)
             print_path(path)
 
 
@@ -70,7 +81,7 @@ def main(v0, frm, to):
     all_paths(shortest_paths, v0)
 
     # Pegamos o caminho de "frm" ate "to" passando por v0
-    path = get_path_passing_through_v0(shortest_paths, v0, frm, to)
+    path = get_path_with_v0(shortest_paths, v0, frm, to)
     print_shortest_path(v0, frm, to)
     print_path(path)
 
