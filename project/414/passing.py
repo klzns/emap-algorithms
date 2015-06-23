@@ -17,29 +17,18 @@ def create_graph(vertices, edges):
     return g
 
 
-def shortest_path(g, a, b):
-    # Computamos os menores caminhos com Dijkstra
-    dijkstra(g, g.get_vertex(a))
-
-    # Atribuimos o destino
-    destination = g.get_vertex(b)
-    path = [destination.get_id()]
-    # Pegamos o caminho percorrido entre o vertice de origem ao destino
-    shortest(destination, path)
-
-    # Limpamos as variaveis e distancias calculadas pelo Dijkstra
-    g.reset()
-
-    return path
-
-
 def compute_all_shortest_paths(g, vertices):
     shortest_paths = {}
 
     for a in vertices:
         shortest_paths[a] = {}
+        dijkstra(g, g.get_vertex(a))
         for b in vertices:
-            shortest_paths[a][b] = shortest_path(g, a, b)
+            destination = g.get_vertex(b)
+            path = [destination.get_id()]
+            shortest(destination, path)
+            shortest_paths[a][b] = path
+        g.reset()
 
     return shortest_paths
 
