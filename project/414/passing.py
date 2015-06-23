@@ -48,11 +48,15 @@ def get_path_passing_through_v0(shortest_paths, v0, frm, to):
     path = []
 
     # O caminho total eh a juncao do caminho do vertice origem ate v0
-    # junto com o caminho de v0 ate o vertice destino
+    # junto com o caminho de v0 ate o vertice destino.
+
+    # Neste caso, pegamos primeiro de v0 ate o destino e depois
+    # da origem ate v0, pois o caminho eh recuperado de tras para frente
     path.extend(shortest_paths[v0][to])
     path.extend(shortest_paths[frm][v0][1:])
 
-    return path
+    # Invertemos o caminho, ja que ele eh gerado de tras para frente
+    return path[::-1]
 
 
 def all_paths(shortest_paths, v0):
@@ -64,6 +68,7 @@ def all_paths(shortest_paths, v0):
 
 
 def main(v0, frm, to):
+    # Lemos a matriz de adjacencia que gera o grafo
     [vertices, edges] = read_csv('graph.csv')
 
     g = create_graph(vertices, edges)

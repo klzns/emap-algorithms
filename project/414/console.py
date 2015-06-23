@@ -48,7 +48,7 @@ def print_all_paths():
 
 
 def print_path(path):
-    print bcolors.OKBLUE, path[::-1], bcolors.ENDC
+    print bcolors.OKBLUE, path, bcolors.ENDC
 
 
 def print_instructions():

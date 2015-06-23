@@ -49,7 +49,6 @@ def show_path(path, vertices, edges, v0):
 
     # Adicionamos as arestas a informacao que ela faz parte do caminho
     edges = edges[:]
-    path = path[::-1]
     for i, node in enumerate(path):
         if i > 0:
             edge = find_edge(edges, path[i-1], node)
