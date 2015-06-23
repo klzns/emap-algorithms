@@ -127,7 +127,7 @@ def remove_person(people, edges, person_name):
     return [new_people, new_edges]
 ```
 
-## Rodando a solução
+### Rodando a solução
 
 O código aceita duas entradas: o número mínimo de amigos e o número mínimo de pessoas que ela deve desconhecer. Por padrão, esses valores são ambos cinco, assim como descrito no exercício.
 

@@ -1,12 +1,16 @@
-from utils import read_csv, get_all_cities
+from utils import read_csv, get_all_cities, show_graph
 import networkx as nx
-import matplotlib.pylab as plt
 from networkx.algorithms.flow import ford_fulkerson
 
 
+# Essa funcao ira criar um grafo com as cidades como vertices e as estradas
+# como arestas. Esse grafo tera um diferencial, que sao os vertices
+# "SOURCE" e "SINK". Precisamos criar esses vertices artificiais para podermos
+# usar o algoritmo de Ford-Fulkerson.
 def create_graph(x_cities, s_cities, v_cities, edges):
     graph = nx.DiGraph()
 
+    # Concatenamos todas as cidades em um unico array
     all_cities = get_all_cities(x_cities, s_cities, v_cities)
 
     # Adicionamos todas as cidades e arestas
@@ -15,13 +19,13 @@ def create_graph(x_cities, s_cities, v_cities, edges):
     for edge in edges:
         graph.add_edge(edge['from'], edge['to'], capacity=1)
 
-    # Adicionamos um no fonte para que possamos usar o algoritmo de Network Flow
+    # Adicionamos um no como fonte para que possamos usar o algoritmo de Ford-Fulkerson
     graph.add_node('SOURCE')
     # Ligamos esse no a todos os vertices de cidades populadas (grupo X)
     for vertex in x_cities:
         graph.add_edge('SOURCE', vertex, capacity=1)
 
-    # Adicionamos um no sumidouro para que possamos usar o algoritmo de Network Flow
+    # Adicionamos um no como sumidouro para que possamos usar o algoritmo de Ford-Fulkerson
     graph.add_node('SINK')
     # Ligamos esse no a todos os vertices de cidades seguras (grupo S)
     for vertex in s_cities:
@@ -30,11 +34,15 @@ def create_graph(x_cities, s_cities, v_cities, edges):
     return graph
 
 
+# Pega as arestas que foram usadas como caminho pelo Ford-Fulkerson
 def get_path(flow_dict):
     edefault = []
 
     for city in flow_dict:
         for destination in flow_dict[city]:
+            # Ignoramos as que tem relacao com os nos fonte e sumidouro
+            # Pegamos aquelas que possuem valor diferente de zero, ou seja,
+            # que sua capacidade esta sendo usada
             if (flow_dict[city][destination] != 0 and
                city != 'SOURCE' and destination != 'SINK'):
                 edefault.append((city, destination))
@@ -42,46 +50,11 @@ def get_path(flow_dict):
     return edefault
 
 
-def get_city_names(x_cities, s_cities, v_cities):
-    labels = {}
-
-    all_cities = get_all_cities(s_cities, x_cities, v_cities)
-
-    for vertex in all_cities:
-        labels[vertex] = vertex
-
-    return labels
-
-
-def show_graph(flow_dict, x_cities, s_cities, v_cities, edges):
-    # Criamos um novo grafo
-    G = nx.DiGraph(flow_dict)
-    pos = nx.circular_layout(G)
-
-    # Inserimos todas as arestas
-    nx.draw_networkx_edges(G, pos, edgelist=edges)
-
-    # Inserimos as cidades populadas (grupo X) em vermelho
-    nx.draw_networkx_nodes(G, pos, nodelist=x_cities, node_color='r')
-
-    # Inserimos as cidades seguras (grupo S) em azul
-    nx.draw_networkx_nodes(G, pos, nodelist=s_cities, node_color='b')
-
-    # Inserimos as cidades restantes (grupo V) em amarelo
-    nx.draw_networkx_nodes(G, pos, nodelist=v_cities, node_color='y')
-
-    # Inserimos os nomes das cidades
-    labels = get_city_names(x_cities, s_cities, v_cities)
-    nx.draw_networkx_labels(G, pos, labels=labels)
-
-    plt.axis('off')
-    plt.show()
-
-
 def main():
+    # Lemos o grafo de um arquivo
     [x_cities, s_cities, v_cities, edges] = read_csv('cities.txt')
 
-    # Criamos o grafo
+    # Criamos o grafo com os vertices "SOURCE" e "SINK"
     graph = create_graph(x_cities, s_cities, v_cities, edges)
 
     # Chamamos o algoritmo de Ford-Fulkerson para o grafo

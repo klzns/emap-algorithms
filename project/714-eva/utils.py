@@ -1,4 +1,6 @@
 import csv
+import networkx as nx
+import matplotlib.pylab as plt
 
 
 def get_city_info(city):
@@ -63,3 +65,39 @@ def get_all_cities(s_cities, x_cities, v_cities):
     all_cities.extend(v_cities)
 
     return all_cities
+
+
+def get_city_names(x_cities, s_cities, v_cities):
+    labels = {}
+
+    all_cities = get_all_cities(s_cities, x_cities, v_cities)
+
+    for vertex in all_cities:
+        labels[vertex] = vertex
+
+    return labels
+
+
+def show_graph(flow_dict, x_cities, s_cities, v_cities, edges):
+    # Criamos um novo grafo
+    G = nx.DiGraph(flow_dict)
+    pos = nx.circular_layout(G)
+
+    # Inserimos todas as arestas
+    nx.draw_networkx_edges(G, pos, edgelist=edges)
+
+    # Inserimos as cidades populadas (grupo X) em vermelho
+    nx.draw_networkx_nodes(G, pos, nodelist=x_cities, node_color='r')
+
+    # Inserimos as cidades seguras (grupo S) em azul
+    nx.draw_networkx_nodes(G, pos, nodelist=s_cities, node_color='b')
+
+    # Inserimos as cidades restantes (grupo V) em amarelo
+    nx.draw_networkx_nodes(G, pos, nodelist=v_cities, node_color='y')
+
+    # Inserimos os nomes das cidades
+    labels = get_city_names(x_cities, s_cities, v_cities)
+    nx.draw_networkx_labels(G, pos, labels=labels)
+
+    plt.axis('off')
+    plt.show()
