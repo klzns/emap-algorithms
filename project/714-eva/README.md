@@ -131,3 +131,5 @@ Dependências do script:
 - Python 2.7
 - networkx
 - matplotlib
+
+![Imagem gerada](./result.png)
