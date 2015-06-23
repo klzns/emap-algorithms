@@ -1,18 +1,13 @@
-from utils import read_csv
+from utils import read_csv, get_all_cities
 import networkx as nx
 import matplotlib.pylab as plt
 from networkx.algorithms.flow import ford_fulkerson
 
 
-def main():
-    [x_cities, s_cities, v_cities, edges] = read_csv('cities.txt')
-
+def create_graph(x_cities, s_cities, v_cities, edges):
     graph = nx.DiGraph()
 
-    all_cities = []
-    all_cities.extend(s_cities)
-    all_cities.extend(x_cities)
-    all_cities.extend(v_cities)
+    all_cities = get_all_cities(x_cities, s_cities, v_cities)
 
     # Adicionamos todas as cidades e arestas
     for vertex in all_cities:
@@ -32,38 +27,72 @@ def main():
     for vertex in s_cities:
         graph.add_edge(vertex, 'SINK', capacity=1)
 
-    # Chamamos o algoritmo de Ford-Fulkerson para o grafo
-    flow_value, flow_dict = nx.maximum_flow(graph, 'SOURCE', 'SINK',
-                                            flow_func=ford_fulkerson)
+    return graph
 
-    # Pegamos apenas as arestas que foram que foram usadas pelo algoritmo
+
+def get_path(flow_dict):
     edefault = []
+
     for city in flow_dict:
         for destination in flow_dict[city]:
             if (flow_dict[city][destination] != 0 and
                city != 'SOURCE' and destination != 'SINK'):
                 edefault.append((city, destination))
 
-    # Pegamos os nomes das cidades
+    return edefault
+
+
+def get_city_names(x_cities, s_cities, v_cities):
     labels = {}
+
+    all_cities = get_all_cities(s_cities, x_cities, v_cities)
+
     for vertex in all_cities:
         labels[vertex] = vertex
 
+    return labels
+
+
+def show_graph(flow_dict, x_cities, s_cities, v_cities, edges):
     # Criamos um novo grafo
     G = nx.DiGraph(flow_dict)
-    pos = nx.circular_layout(graph)
+    pos = nx.circular_layout(G)
+
     # Inserimos todas as arestas
-    nx.draw_networkx_edges(graph, pos, edgelist=edefault)
+    nx.draw_networkx_edges(G, pos, edgelist=edges)
+
     # Inserimos as cidades populadas (grupo X) em vermelho
-    nx.draw_networkx_nodes(graph, pos, nodelist=x_cities, node_color='r')
+    nx.draw_networkx_nodes(G, pos, nodelist=x_cities, node_color='r')
+
     # Inserimos as cidades seguras (grupo S) em azul
-    nx.draw_networkx_nodes(graph, pos, nodelist=s_cities, node_color='b')
+    nx.draw_networkx_nodes(G, pos, nodelist=s_cities, node_color='b')
+
     # Inserimos as cidades restantes (grupo V) em amarelo
-    nx.draw_networkx_nodes(graph, pos, nodelist=v_cities, node_color='y')
+    nx.draw_networkx_nodes(G, pos, nodelist=v_cities, node_color='y')
+
     # Inserimos os nomes das cidades
-    nx.draw_networkx_labels(graph, pos, labels=labels)
+    labels = get_city_names(x_cities, s_cities, v_cities)
+    nx.draw_networkx_labels(G, pos, labels=labels)
+
     plt.axis('off')
     plt.show()
+
+
+def main():
+    [x_cities, s_cities, v_cities, edges] = read_csv('cities.txt')
+
+    # Criamos o grafo
+    graph = create_graph(x_cities, s_cities, v_cities, edges)
+
+    # Chamamos o algoritmo de Ford-Fulkerson para o grafo
+    flow_value, flow_dict = nx.maximum_flow(graph, 'SOURCE', 'SINK',
+                                            flow_func=ford_fulkerson)
+
+    # Pegamos apenas as arestas que foram que foram usadas pelo algoritmo
+    edges_path = get_path(flow_dict)
+
+    # Exibimos o grafo com o resultado
+    show_graph(flow_dict, x_cities, s_cities, v_cities, edges_path)
 
 
 if __name__ == '__main__':

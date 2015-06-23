@@ -53,3 +53,13 @@ def read_csv(filename):
     v_cities = set(v_cities)
 
     return [x_cities, s_cities, v_cities, clean_roads]
+
+
+def get_all_cities(s_cities, x_cities, v_cities):
+    all_cities = []
+
+    all_cities.extend(s_cities)
+    all_cities.extend(x_cities)
+    all_cities.extend(v_cities)
+
+    return all_cities
