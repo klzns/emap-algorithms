@@ -140,3 +140,5 @@ python party.py <minimum_number_of_friends> <must_not_know_at_least>
 A cada iteração de redução da lista, o código apresenta a lista de amigos restantes. No final, é apresentada a lista de convidados, se ela existe.
 
 A lista de pessoas e seus relacionamentos é representada no arquivo "friends.csv", que tem a forma de uma matriz de incidência.
+
+![Imagem gerada](./result.png)
