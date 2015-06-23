@@ -9,8 +9,7 @@ def filter_people(people, edges, minimum_number_of_friends, must_not_know_at_lea
     # Numero total de pessoas
     number_of_people = len(people)
 
-    has_too_few_friends = []
-    has_too_much_friends = []
+    people_to_remove = []
 
     for i, person in enumerate(people):
         # Verifica quantos amigos ela tem
@@ -20,15 +19,15 @@ def filter_people(people, edges, minimum_number_of_friends, must_not_know_at_lea
         # Caso tenha menos amigos do que o minimo estabelecido
         if friends < minimum_number_of_friends:
             # Ela entra na lista
-            has_too_few_friends.append(person)
+            people_to_remove.append(person)
 
         # Caso ela tenha mais amigos do que o numero total de pessoas menos
         # o minimo de desconhecidos
         if friends >= len(people) - must_not_know_at_least:
             # Ela entra na lista
-            has_too_much_friends.append(person)
+            people_to_remove.append(person)
 
-    return [has_too_few_friends, has_too_much_friends]
+    return people_to_remove
 
 
 def remove_person(people, edges, person_name):
@@ -61,7 +60,7 @@ def remove_people(people, edges, list):
     return [new_people, new_edges]
 
 
-def main(mininum, max):
+def main(min_friends, min_strangers):
     people, edges = read_csv('friends.csv')
 
     # Se algo esta errado na matriz de incidencia, aborta
@@ -70,26 +69,20 @@ def main(mininum, max):
 
     iteration = 1
     while True:
-        people_to_remove = []
         # Pegamos as pessoas que nao atendem as restricoes, isto eh,
         # que nao possuem no minimo 5 amigos e que nao desconhecem pelo menos
         # outras 5
-        [has_too_few_friends, has_too_much_friends] = filter_people(people,
-                                                                    edges,
-                                                                    mininum,
-                                                                    max)
-        people_to_remove.extend(has_too_few_friends)
-        people_to_remove.extend(has_too_much_friends)
+        people_to_remove = filter_people(people, edges, min_friends, min_strangers)
         people_to_remove = set(people_to_remove)
 
-        # Quando nao tivermos mais ninguem para retirar da lista, paramos
+        # Quando nao tivermos mais ninguem para retirar da lista, paramos o algoritmo
         if len(people_to_remove) is 0:
             break
 
         # Removemos as pessoas que nao atendem as restricoes
         [people, edges] = remove_people(people, edges, people_to_remove)
 
-        # Imprimimos o estado atual
+        # Imprimimos o estado atual da lista de convidados
         print_status(people, edges, people_to_remove, iteration)
 
         iteration += 1
